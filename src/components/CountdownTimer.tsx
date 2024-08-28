@@ -3,36 +3,36 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 export function CountdownTimer(): ReactElement {
     const [timeLeft, setTimeLeft] = useState(60);
     const [isActive, setIsActive] = useState(false);
-    const currentTime = useRef(timeLeft);
+    const currentTime = useRef(null);
 
     useEffect(() => {
         if (isActive) {
-            setInterval(() => {
+            const timerInterval = setInterval(() => {
                 setTimeLeft((timeLeft) => timeLeft - 1);
             }, 1000);
+            return () => clearInterval(timerInterval);
         }
-    });
+    }, [isActive]);
 
-    const handlePauseTimer = () => {
-        currentTime.current = timeLeft;
+    const handlePause = () => {
         setIsActive(false);
     };
 
-    const handleStartTimer = () => {
-        setTimeLeft(currentTime.current);
-        setIsActive(true);
+    const handleReset = () => {
+        setIsActive(false);
+        setTimeLeft(60);
     };
 
-    const handleReset = () => {
-        currentTime.current = 60;
+    const handleStart = () => {
+        setIsActive(true);
     };
 
     return (
         <div>
             <h1>Countdown Timer</h1>
             <h2>{timeLeft} seconds left</h2>
-            <button onClick={handleStartTimer}>Start</button>
-            <button onClick={handlePauseTimer}>Pause</button>
+            <button onClick={handleStart}>Start</button>
+            <button onClick={handlePause}>Pause</button>
             <button onClick={handleReset}>Reset</button>
         </div>
     );
