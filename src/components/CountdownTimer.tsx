@@ -1,14 +1,18 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 
 export function CountdownTimer(): ReactElement {
-    const [timeLeft, setTimeLeft] = useState(60);
+    const [timeLeft, setTimeLeft] = useState(3);
     const [isActive, setIsActive] = useState(false);
-    const currentTime = useRef(null);
+    const currentTime = useRef(0);
 
     useEffect(() => {
         if (isActive) {
+            currentTime.current = timeLeft;
             const timerInterval = setInterval(() => {
-                setTimeLeft((timeLeft) => timeLeft - 1);
+                if (currentTime.current > 0) {
+                    setTimeLeft((timeLeft) => timeLeft - 1);
+                    currentTime.current = currentTime.current - 1;
+                }
             }, 1000);
             return () => clearInterval(timerInterval);
         }
@@ -20,7 +24,7 @@ export function CountdownTimer(): ReactElement {
 
     const handleReset = () => {
         setIsActive(false);
-        setTimeLeft(60);
+        setTimeLeft(3);
     };
 
     const handleStart = () => {
