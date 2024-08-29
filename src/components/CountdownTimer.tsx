@@ -7,11 +7,11 @@ export function CountdownTimer(): ReactElement {
 
     useEffect(() => {
         if (isActive) {
-            currentTime.current = timeLeft;
+            let counter: number = timeLeft;
             const timerInterval = setInterval(() => {
-                if (currentTime.current > 0) {
+                if (counter > 0) {
                     setTimeLeft((timeLeft) => timeLeft - 1);
-                    currentTime.current = currentTime.current - 1;
+                    counter -= 1;
                 }
             }, 1000);
             return () => clearInterval(timerInterval);
