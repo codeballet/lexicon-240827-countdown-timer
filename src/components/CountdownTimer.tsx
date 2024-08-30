@@ -1,17 +1,33 @@
-import { ReactElement, useEffect, useRef, useState } from "react";
+import {
+    FormEvent,
+    FormEventHandler,
+    ReactElement,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import { Button } from "./Button";
 
-const TIME = 60;
-
 export function CountdownTimer(): ReactElement {
-    const [timeLeft, setTimeLeft] = useState(TIME);
-    const [isActive, setIsActive] = useState(false);
+    const [isActive, setIsActive] = useState<boolean>(false);
+    const [time, setTime] = useState<number | string>("");
+    const [timeLeft, setTimeLeft] = useState<number>(60);
 
     const timerId = useRef<number>();
 
     const handleReset = () => {
         setIsActive(false);
-        setTimeLeft(TIME);
+        setTimeLeft(60);
+    };
+
+    const handleSubmit: FormEventHandler<HTMLFormElement> = (
+        e: FormEvent<HTMLFormElement>
+    ) => {
+        e.preventDefault();
+        console.log("Form submitted");
+
+        setTimeLeft(time as number);
+        setTime("");
     };
 
     useEffect(() => {
@@ -41,6 +57,15 @@ export function CountdownTimer(): ReactElement {
                 icon={isActive ? "pause" : "play_arrow"}
                 onClick={() => setIsActive((ia) => !ia)}
             />
+            <form className="time__form" onSubmit={handleSubmit}>
+                <label htmlFor="time">Set timer</label>
+                <input
+                    onChange={(e) => setTime(parseInt(e.target.value))}
+                    placeholder="seconds"
+                    type="number"
+                    value={time}
+                />
+            </form>
         </div>
     );
 }
