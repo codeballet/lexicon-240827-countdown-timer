@@ -1,43 +1,46 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
+import { Button } from "./Button";
+
+const TIME = 60;
 
 export function CountdownTimer(): ReactElement {
-    const [timeLeft, setTimeLeft] = useState(3);
+    const [timeLeft, setTimeLeft] = useState(TIME);
     const [isActive, setIsActive] = useState(false);
-    const currentTime = useRef(0);
 
-    useEffect(() => {
-        if (isActive) {
-            let counter: number = timeLeft;
-            const timerInterval = setInterval(() => {
-                if (counter > 0) {
-                    setTimeLeft((timeLeft) => timeLeft - 1);
-                    counter -= 1;
-                }
-            }, 1000);
-            return () => clearInterval(timerInterval);
-        }
-    }, [isActive]);
-
-    const handlePause = () => {
-        setIsActive(false);
-    };
+    const timerId = useRef<number>();
 
     const handleReset = () => {
         setIsActive(false);
-        setTimeLeft(3);
+        setTimeLeft(TIME);
     };
 
-    const handleStart = () => {
-        setIsActive(true);
-    };
+    useEffect(() => {
+        if (isActive) {
+            timerId.current = setInterval(() => {
+                setTimeLeft((timeLeft) => timeLeft - 1);
+            }, 1000);
+        }
+
+        if (!isActive) {
+            clearInterval(timerId.current);
+        }
+    }, [isActive]);
+
+    useEffect(() => {
+        if (timeLeft === 0) {
+            setIsActive(false);
+        }
+    }, [timeLeft]);
 
     return (
         <div>
             <h1>Countdown Timer</h1>
             <h2>{timeLeft} seconds left</h2>
-            <button onClick={handleStart}>Start</button>
-            <button onClick={handlePause}>Pause</button>
-            <button onClick={handleReset}>Reset</button>
+            <Button icon="restart_alt" onClick={handleReset} />
+            <Button
+                icon={isActive ? "pause" : "play_arrow"}
+                onClick={() => setIsActive((ia) => !ia)}
+            />
         </div>
     );
 }
