@@ -7,6 +7,7 @@ import {
     useState,
 } from "react";
 import { Button } from "./Button";
+import { Countdown } from "./Countdown";
 import { Feedback } from "./Feedback";
 
 export function CountdownTimer(): ReactElement {
@@ -55,7 +56,7 @@ export function CountdownTimer(): ReactElement {
     return (
         <div>
             <h1>Countdown Timer</h1>
-            <h2>{timeLeft} seconds left</h2>
+            <Countdown timeLeft={timeLeft} />
             <Button icon="restart_alt" onClick={handleReset} />
             <Button
                 icon={isActive ? "pause" : "play_arrow"}
