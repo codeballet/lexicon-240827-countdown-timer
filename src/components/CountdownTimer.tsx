@@ -7,8 +7,10 @@ import {
     useState,
 } from "react";
 import { Button } from "./Button";
+import { Feedback } from "./Feedback";
 
 export function CountdownTimer(): ReactElement {
+    const [feedback, setFeedback] = useState<string>("");
     const [isActive, setIsActive] = useState<boolean>(false);
     const [time, setTime] = useState<number | string>("");
     const [timeLeft, setTimeLeft] = useState<number>(60);
@@ -16,6 +18,7 @@ export function CountdownTimer(): ReactElement {
     const timerId = useRef<number>();
 
     const handleReset = () => {
+        setFeedback("");
         setIsActive(false);
         setTimeLeft(60);
     };
@@ -26,8 +29,8 @@ export function CountdownTimer(): ReactElement {
         e.preventDefault();
         console.log("Form submitted");
 
-        setTimeLeft(time as number);
         setTime("");
+        setTimeLeft(time as number);
     };
 
     useEffect(() => {
@@ -44,6 +47,7 @@ export function CountdownTimer(): ReactElement {
 
     useEffect(() => {
         if (timeLeft === 0) {
+            setFeedback("Your time is up!");
             setIsActive(false);
         }
     }, [timeLeft]);
@@ -66,6 +70,7 @@ export function CountdownTimer(): ReactElement {
                     value={time}
                 />
             </form>
+            <Feedback feedback={feedback} />
         </div>
     );
 }
