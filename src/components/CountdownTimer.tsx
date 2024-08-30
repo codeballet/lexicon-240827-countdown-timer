@@ -9,27 +9,29 @@ import {
 import { Button } from "./Button";
 import { Countdown } from "./Countdown";
 import { Feedback } from "./Feedback";
+import { Form } from "./Form";
 
 export function CountdownTimer(): ReactElement {
+    const [duration, setDuration] = useState<number>(60);
     const [feedback, setFeedback] = useState<string>("");
     const [isActive, setIsActive] = useState<boolean>(false);
     const [time, setTime] = useState<number | string>("");
-    const [timeLeft, setTimeLeft] = useState<number>(60);
+    const [timeLeft, setTimeLeft] = useState<number>(duration);
 
     const timerId = useRef<number>();
 
     const handleReset = () => {
         setFeedback("");
         setIsActive(false);
-        setTimeLeft(60);
+        setTimeLeft(duration);
     };
 
     const handleSubmit: FormEventHandler<HTMLFormElement> = (
         e: FormEvent<HTMLFormElement>
     ) => {
         e.preventDefault();
-        console.log("Form submitted");
 
+        setDuration(time as number);
         setTime("");
         setTimeLeft(time as number);
     };
@@ -62,15 +64,11 @@ export function CountdownTimer(): ReactElement {
                 icon={isActive ? "pause" : "play_arrow"}
                 onClick={() => setIsActive((ia) => !ia)}
             />
-            <form className="time__form" onSubmit={handleSubmit}>
-                <label htmlFor="time">Set timer</label>
-                <input
-                    onChange={(e) => setTime(parseInt(e.target.value))}
-                    placeholder="seconds"
-                    type="number"
-                    value={time}
-                />
-            </form>
+            <Form
+                onChange={setTime}
+                onSubmit={handleSubmit}
+                time={time as number}
+            />
             <Feedback feedback={feedback} />
         </div>
     );
